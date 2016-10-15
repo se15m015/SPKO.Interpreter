@@ -13,18 +13,22 @@ import java.io.IOException;
 public class Interpreter {
     public static void main(String[] args) throws IOException {
 
-// Create an input character stream from standard in
-        //ANTLRFileStream input = new ANTLRFileStream("input"); // give path to the file input
-        CharStream input = new ANTLRInputStream("x = --2;");
-// Create an ExprLexer that feeds from that stream
+        // Create an input character stream from standard in
+        ANTLRFileStream input = new ANTLRFileStream("input.txt"); // give path to the file input
+//        CharStream input = new ANTLRInputStream("x = --2;");
+        // Create an ExprLexer that feeds from that stream
         GrammarLexer lexer = new GrammarLexer(input);
-// Create a stream of tokens fed by the lexer
+        // Create a stream of tokens fed by the lexer
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-// Create a parser that feeds off the token stream
+        // Create a parser that feeds off the token stream
         GrammarParser parser = new GrammarParser(tokens);
-// Begin parsing at start rule
+        // Begin parsing at start rule
         //parser.prog();
         GrammarParser.StatementsContext sc = parser.statements();
+
+        for(int i = 0; i < tokens.getNumberOfOnChannelTokens(); i++){
+            System.out.println(tokens.get(i));
+        }
 
     }
 
