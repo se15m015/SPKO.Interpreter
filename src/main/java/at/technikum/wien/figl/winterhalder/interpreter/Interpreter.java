@@ -1,9 +1,6 @@
 package at.technikum.wien.figl.winterhalder.interpreter;
 import at.technikum.wien.figl.winterhalder.interpreter.gen.*;
-import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 
 import java.io.IOException;
 
@@ -13,23 +10,39 @@ import java.io.IOException;
 public class Interpreter {
     public static void main(String[] args) throws IOException {
 
-        // Create an input character stream from standard in
-        ANTLRFileStream input = new ANTLRFileStream("input.txt"); // give path to the file input
-//        CharStream input = new ANTLRInputStream("x = --2;");
-        // Create an ExprLexer that feeds from that stream
-        GrammarLexer lexer = new GrammarLexer(input);
-        // Create a stream of tokens fed by the lexer
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        // Create a parser that feeds off the token stream
-        GrammarParser parser = new GrammarParser(tokens);
-        // Begin parsing at start rule
-        //parser.prog();
-        GrammarParser.StatementsContext sc = parser.statements();
 
-        for(int i = 0; i < tokens.getNumberOfOnChannelTokens(); i++){
-            System.out.println(tokens.get(i));
-        }
+//        for(int i = 0; i < tokens.getNumberOfOnChannelTokens(); i++){
+//            System.out.println(tokens.get(i));
+//        }
 
     }
+
+    public boolean parseFile(String fileName) throws IOException {
+        ANTLRFileStream input = new ANTLRFileStream(fileName);
+        return parse(input);
+    }
+
+    public boolean parseString(String content){
+        CharStream input = new ANTLRInputStream(content);
+        return parse(input);
+    }
+
+    private boolean parse(CharStream input){
+            // Create an ExprLexer that feeds from that stream
+            GrammarLexer lexer = new GrammarLexer(input);
+            // Create a stream of tokens fed by the lexer
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            // Create a parser that feeds off the token stream
+            GrammarParser parser = new GrammarParser(tokens);
+            // Begin parsing at start rule
+            GrammarParser.StatementsContext sc = parser.statements();
+
+        if(parser.getNumberOfSyntaxErrors() == 0){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
 
 }
