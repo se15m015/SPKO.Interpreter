@@ -1,30 +1,50 @@
 grammar GrammarSimple;
 
-@header { import java.util.*; }
+@header {
+    import java.util.*;
+    import java.util.ArrayList;
+}
 
-statements[Map<String, Integer> table] : (statement[table] ';')*;
+@members {
+    private Map<String, Integer> table = new HashMap<String, Integer>();
 
-statement[Map<String, Integer> table] : 'print' expr[table] { System.out.println($expr.v); }
-            | 'var' ID ('=' expr[table])? { $table.put($ID.text, $expr.v); }
-            | ID ('=' expr[table])? { $table.put($ID.text, $expr.v); };
+    private boolean variableDefined(String name){
+        return table.containsKey(name);
+    }
 
-expr[Map<String, Integer> table] returns [int v] : sum[table] { $v = $sum.v; };
+    private Integer getValue(String name){
+        return table.get(name);
+    }
 
-sum[Map<String, Integer> table] returns [int v] : product[table] { $v = $product.v; }
-            ( '+' product[table] { $v+=$product.v;} )*
-            ( '-' product[table] { $v-=$product.v;} )*;
+    private void setVariable(String name, Integer value){
+       table.put(name,value);
+    }
+}
 
-product[Map<String, Integer> table] returns [int v] : unary[table] { $v = $unary.v; }
-            ( '*' unary[table] { $v*=$unary.v;} )*
-            ( '/' unary[table] { $v/=$unary.v;} )*
-            ( '%' unary[table] { $v/=$unary.v;} )*;
+statements : (statement ';')*;
 
-unary[Map<String, Integer> table] returns [int v] : '-' unary[table] { $v = $unary.v*-1; }
-            | term[table] { $v = $term.v;} ;
+statement: 'print' expr { System.out.println($expr.v); }
+            | 'var' ID ('=' expr)? { setVariable($ID.text, $expr.v); }
+            | ID ('=' expr)? { setVariable($ID.text, $expr.v);};
 
-term[Map<String, Integer> table] returns [int v]: INT { $v = Integer.parseInt($INT.text); }
-            | '(' expr[table] ')' { $v = $expr.v; }
-            | ID { $v = $table.get($ID.text); };
+expr returns [int v] : sum { $v = $sum.v; };
+
+sum returns [int v] : product { $v = $product.v; }
+            ( '+' product { $v+=$product.v;} )*
+            ( '-' product { $v-=$product.v;} )*;
+
+product returns [int v] : unary { $v = $unary.vUnary; }
+            ( '*' unary { $v*=$unary.vUnary;} )*
+            ( '/' unary { $v/=$unary.vUnary;} )*
+            ( '%' unary { $v/=$unary.vUnary;} )*;
+
+unary returns [int vUnary] : '-' unary { $vUnary = ($unary.vUnary*-1); }
+            | term { $vUnary = $term.vTerm;} ;
+
+
+term returns [int vTerm]: INT { $vTerm = Integer.parseInt($INT.text); }
+            | '(' expr ')' { $vTerm = $expr.v; }
+            | ID { $vTerm = getValue($ID.text); };
             //| ID {
             //                 return values.get($ID.text);
             //              };

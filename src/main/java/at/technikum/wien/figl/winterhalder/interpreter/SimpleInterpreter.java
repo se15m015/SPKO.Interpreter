@@ -39,8 +39,8 @@ public class SimpleInterpreter {
         // Begin parsing at start rule
         //GrammarSimpleParser.StatementsContext sc = parser.statements();
 
-        Map<String, Integer> variables = new HashMap<String, Integer>();
-        System.out.println(parser.statements(variables));
+
+        System.out.println(parser.statements());
 
         if(parser.getNumberOfSyntaxErrors() == 0){
             return false;
