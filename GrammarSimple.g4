@@ -24,8 +24,13 @@ grammar GrammarSimple;
 statements : (statement ';')*;
 
 statement: 'print' expr { System.out.println($expr.v); }
-            | 'var' ID ('=' expr)? { setVariable($ID.text, $expr.v); }
-            | ID ('=' expr)? { setVariable($ID.text, $expr.v);};
+            | 'var' ID {setVariable($ID.text, 0);} ('=' expr {setVariable($ID.text, $expr.v);})?
+            | ID ('=' expr)? {
+                    if(!variableDefined($ID.text)) {
+                        throw new IllegalArgumentException("The variable '"+$ID.text+"' is undefined!");
+                    }
+                    else {setVariable($ID.text, $expr.v);}
+                    };
 
 expr returns [int v] : sum { $v = $sum.v; };
 

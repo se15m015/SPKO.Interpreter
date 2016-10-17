@@ -39,7 +39,6 @@ public class SimpleInterpreter {
         // Begin parsing at start rule
         //GrammarSimpleParser.StatementsContext sc = parser.statements();
 
-
         System.out.println(parser.statements());
 
         if(parser.getNumberOfSyntaxErrors() == 0){

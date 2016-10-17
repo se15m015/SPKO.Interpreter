@@ -1,5 +1,6 @@
 package at.technikum.wien.figl.winterhalder.interpreter;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +23,18 @@ public class SimpleInterpreterTest {
     }
 
     @Test
-    public void ParserShouldPass2(){
+    public void AssigneVariableAndPrintValue(){
         errors = interpreter.parseString("var x = 5; print x+3;");
+        Assert.assertFalse(errors);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void UsingUndeclaredVariable(){
+        errors = interpreter.parseString("x = 5;");
+    }
+    @Test
+    public void DeclareVariableButUnassigned(){
+        errors = interpreter.parseString("var x; print x;");
         Assert.assertFalse(errors);
     }
 
@@ -36,33 +47,20 @@ public class SimpleInterpreterTest {
         }
         Assert.assertFalse(errors);
     }
-
     @Test
-    public void ParserShouldPassAll(){
-        errors = true;
-        errors = interpreter.parseString("x = --2;");
-        Assert.assertFalse(errors);
-
-        errors = true;
-        errors = interpreter.parseString("var x = 3+5*4;");
-        Assert.assertFalse(errors);
-
-        errors = true;
-        errors = interpreter.parseString("print x;");
-        Assert.assertFalse(errors);
-    }
-
-    @Test
-    public void ParserShouldFail(){
-
+    public void ParserShouldFail1() {
         errors = false;
         errors = interpreter.parseString("var x+5 = 23;");
         Assert.assertTrue(errors);
-
+    }
+    @Test
+    public void ParserShouldFail2() {
         errors = false;
-        errors = interpreter.parseString("x = ((4);");
+        errors = interpreter.parseString("var x = ((4);");
         Assert.assertTrue(errors);
-
+    }
+    @Test
+    public void ParserShouldFail3(){
         errors = false;
         errors = interpreter.parseString("5 = 234;");
         Assert.assertTrue(errors);
