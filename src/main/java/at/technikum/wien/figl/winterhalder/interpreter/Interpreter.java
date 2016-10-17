@@ -3,6 +3,7 @@ import at.technikum.wien.figl.winterhalder.interpreter.gen.*;
 import org.antlr.v4.runtime.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Created by richie on 14/10/16.
@@ -36,6 +37,8 @@ public class Interpreter {
             GrammarParser parser = new GrammarParser(tokens);
             // Begin parsing at start rule
             GrammarParser.StatementsContext sc = parser.statements();
+
+        System.out.println(parser.expr());
 
         if(parser.getNumberOfSyntaxErrors() == 0){
             return false;

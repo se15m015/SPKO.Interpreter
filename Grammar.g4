@@ -1,11 +1,18 @@
 grammar Grammar;
-statements  : (statement ';')*;
+statements  : (statement (';')?)*;
+
 statement   : 'print' expr
             | 'var' ID ('=' expr)?
             | ID '=' expr
-            | COMMENT;
+            | 'while' expr 'do' statement
+            | 'if' expr 'then' statement ('else' statement)?
+         //   | 'funcdef' ID '(' idlist ')' statement // OPTION 3
+            | '{' statements '}'  // OPTION 1
+            | expr;                // OPTION 2
 
-expr        : sum;
+expr        : cmp;
+
+cmp         : sum (('<' | '=<' | '==' | '><' | '>=' | '>') sum)?;
 
 sum         : product (('+'|'-') product)*;
 
@@ -16,10 +23,15 @@ unary       : '-' unary
 
 term        : '(' expr ')'
             | ID
-            | INT;
+         //   | ID '(' arglist ')'
+            | INT
+            | '{' statements '}'; // OPTION 2
 
 ID          : [a-zA-Z][a-zA-Z0-9_]*;
+
 INT         : [0-9]+;
+
 WS          : [ \t\n\r]+ -> skip ;
+
 COMMENT     :   ( '//' ~[\r\n]* '\r'? '\n'
             | '/*' .*? '*/') -> channel(HIDDEN);
