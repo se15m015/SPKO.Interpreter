@@ -1,20 +1,21 @@
 package at.technikum.wien.figl.winterhalder.interpreter;
-import at.technikum.wien.figl.winterhalder.interpreter.gen.*;
-import org.antlr.v4.runtime.*;
+
+import at.technikum.wien.figl.winterhalder.interpreter.gen.GrammarSimpleLexer;
+import at.technikum.wien.figl.winterhalder.interpreter.gen.GrammarSimpleParser;
+import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by richie on 14/10/16.
  */
-public class Interpreter {
+public class SimpleInterpreter {
     public static void main(String[] args) throws IOException {
-
-
-//        for(int i = 0; i < tokens.getNumberOfOnChannelTokens(); i++){
-//            System.out.println(tokens.get(i));
-//        }
 
     }
 
@@ -30,15 +31,16 @@ public class Interpreter {
 
     private boolean parse(CharStream input){
         // Create an ExprLexer that feeds from that stream
-        GrammarLexer lexer = new GrammarLexer(input);
+        GrammarSimpleLexer lexer = new GrammarSimpleLexer(input);
         // Create a stream of tokens fed by the lexer
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         // Create a parser that feeds off the token stream
-        GrammarParser parser = new GrammarParser(tokens);
+        GrammarSimpleParser parser = new GrammarSimpleParser(tokens);
         // Begin parsing at start rule
-        GrammarParser.StatementsContext sc = parser.statements();
+        //GrammarSimpleParser.StatementsContext sc = parser.statements();
 
-        System.out.println(parser.expr());
+        Map<String, Integer> variables = new HashMap<String, Integer>();
+        System.out.println(parser.statements(variables));
 
         if(parser.getNumberOfSyntaxErrors() == 0){
             return false;
