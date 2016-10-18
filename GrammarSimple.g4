@@ -21,7 +21,7 @@ grammar GrammarSimple;
     }
 }
 
-statements : (statement ';')*; //comment?;
+statements : (statement ';')*;
 
 statement: 'print' expr { System.out.println($expr.v); }
             | 'var' ID {setVariable($ID.text, 0);} ('=' expr {setVariable($ID.text, $expr.v);})?
@@ -49,10 +49,6 @@ unary returns [int vUnary] : '-' unary { $vUnary = $unary.vUnary *(-1); }
 term returns [int vTerm]: INT { $vTerm = Integer.parseInt($INT.text); }
             | '(' expr ')' { $vTerm = $expr.v; }
             | ID { $vTerm = getValue($ID.text); };
-
-//comment     :  ('//' .* '\n');
-
-
 
 ID          : [a-zA-Z][a-zA-Z0-9_]*;
 

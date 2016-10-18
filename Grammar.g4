@@ -21,17 +21,17 @@ product     : unary (('*'|'/'|'%') unary)*;
 unary       : '-' unary
             | term;
 
-term        : '(' expr ')'
+term returns [int vTerm]: '(' expr ')'
             | ID
-         //   | ID '(' arglist ')'
+            | ID '(' arglist ')'
             | INT
-            | '{' statements '}'; // OPTION 2
+            //| '{' statements '}' // OPTION 2
 
 ID          : [a-zA-Z][a-zA-Z0-9_]*;
 
 INT         : [0-9]+;
 
-WS          : [ \t\n\r]+ -> skip ;
+SINGLE_LINE_COMMENT:     '//'  InputCharacter*    -> channel(HIDDEN);   //Quelle: https://github.com/antlr/grammars-v4/blob/master/csharp/CSharpLexer.g4
+fragment InputCharacter:       ~[\r\n\u0085\u2028\u2029];
 
-COMMENT     :   ( '//' ~[\r\n]* '\r'? '\n'
-            | '/*' .*? '*/') -> channel(HIDDEN);
+WS          : [ \t\n\r]+ -> skip ;
