@@ -23,7 +23,7 @@ public class SimpleInterpreterTest {
     }
 
     @Test
-    public void AssigneVariableAndPrintValue(){
+    public void AssignVariableAndPrintValue(){
         errors = interpreter.parseString("var x = 5; print x+3;");
         Assert.assertFalse(errors);
     }
@@ -35,6 +35,16 @@ public class SimpleInterpreterTest {
     @Test
     public void DeclareVariableButUnassigned(){
         errors = interpreter.parseString("var x; print x;");
+        Assert.assertFalse(errors);
+    }
+
+    @Test
+    public void ParseComments(){
+        errors = interpreter.parseString("//print 17;");
+        Assert.assertFalse(errors);
+        errors = interpreter.parseString("print 3;//print 17;");
+        Assert.assertFalse(errors);
+        errors = interpreter.parseString("print 3;var x;// KOMMENTAR \nx=3;//KOMMENTAR2\nprint x+1;");
         Assert.assertFalse(errors);
     }
 

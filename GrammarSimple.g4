@@ -21,7 +21,7 @@ grammar GrammarSimple;
     }
 }
 
-statements : (statement ';')*;
+statements : (statement ';')*; //comment?;
 
 statement: 'print' expr { System.out.println($expr.v); }
             | 'var' ID {setVariable($ID.text, 0);} ('=' expr {setVariable($ID.text, $expr.v);})?
@@ -43,19 +43,22 @@ product returns [int v] : unary { $v = $unary.vUnary; }
             ( '/' unary { $v/=$unary.vUnary;} )*
             ( '%' unary { $v/=$unary.vUnary;} )*;
 
-unary returns [int vUnary] : '-' unary { $vUnary = ($unary.vUnary*-1); }
+unary returns [int vUnary] : '-' unary { $vUnary = $unary.vUnary *(-1); }
             | term { $vUnary = $term.vTerm;} ;
-
 
 term returns [int vTerm]: INT { $vTerm = Integer.parseInt($INT.text); }
             | '(' expr ')' { $vTerm = $expr.v; }
             | ID { $vTerm = getValue($ID.text); };
-            //| ID {
-            //                 return values.get($ID.text);
-            //              };
+
+//comment     :  ('//' .* '\n');
+
+
 
 ID          : [a-zA-Z][a-zA-Z0-9_]*;
 
 INT         : [0-9]+;
+
+SINGLE_LINE_COMMENT:     '//'  InputCharacter*    -> channel(HIDDEN);   //Quelle: https://github.com/antlr/grammars-v4/blob/master/csharp/CSharpLexer.g4
+fragment InputCharacter:       ~[\r\n\u0085\u2028\u2029];
 
 WS          : [ \t\n\r]+ -> skip ;
