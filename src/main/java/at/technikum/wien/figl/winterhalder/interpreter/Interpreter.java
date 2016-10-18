@@ -38,8 +38,6 @@ public class Interpreter {
         // Begin parsing at start rule
         GrammarParser.StatementsContext sc = parser.statements();
 
-        System.out.println(parser.expr());
-
         if(parser.getNumberOfSyntaxErrors() == 0){
             return false;
         }else {

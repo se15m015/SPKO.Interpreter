@@ -1,0 +1,6 @@
+var y = 0;
+while(y >< 3) do
+{
+    y = y + 1;
+    print y;
+}
