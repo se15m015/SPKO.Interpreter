@@ -1,4 +1,4 @@
-func printtwo(a, b) {
+funcdef printtwo(a, b) {
 print a;
 print b;
 }

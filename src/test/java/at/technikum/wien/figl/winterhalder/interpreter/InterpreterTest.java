@@ -19,6 +19,14 @@ public class InterpreterTest {
     }
 
     @Test
+    public void ParseMathOperators() {
+        errors = interpreter.parseString("print 17%3;");
+        Assert.assertTrue(errors);
+        errors = interpreter.parseString("print 17%3;");
+        Assert.assertTrue(errors);
+    }
+
+    @Test
     public void AssignVariableAndPrintValue() {
         errors = interpreter.parseString("var x = 5; print x+3;");
         Assert.assertTrue(errors);
@@ -146,4 +154,13 @@ public class InterpreterTest {
         Assert.assertTrue(errors);
     }
 
+    @Test
+    public void ParseFunc2() {
+        try {
+            errors = interpreter.parseFile("input_funcdef2.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(errors);
+    }
 }

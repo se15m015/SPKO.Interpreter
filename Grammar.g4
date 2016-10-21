@@ -10,10 +10,10 @@ statement : 'print' e=expr                                                  #pri
             |  'while' c=expr 'do' s=statement                              #whileStmt
             | 'if' c=expr 'then' sIf=statement ('else' sElse=statement)?    #ifStmt
             | 'funcdef' ID '(' idlist ')' statement                         #funcdefStmt
-            //| ID '(' Methodenaufruf
             | '{' s=statements '}'                                          #blockStmt // OPTION 1
             | expr                                                          #simpleExpr // OPTION 2
             ;
+
 expr : left=expr op=('<'|'=<'|'=='|'><'|'>='|'>') right=expr #opExpr
         | left=expr op=('*'|'/'|'%') right=expr #opExpr
         | left=expr op=('+'|'-') right=expr #opExpr
@@ -22,10 +22,12 @@ expr : left=expr op=('<'|'=<'|'=='|'><'|'>='|'>') right=expr #opExpr
         | ID    #idExpr
         | INT   #numExpr
         | '{' s=statements '}' #inlineStmt// OPTION 2
-    ;
+        | ID '('arglist')'                                              #funccallStmt
+        ;
 
-idlist :  ID (',' ID)*
-    ;
+idlist :  ID (',' ID)*;
+
+arglist :  (expr) (',' expr)*;
 
 ID          : [a-zA-Z][a-zA-Z0-9_]*;
 
