@@ -19,10 +19,11 @@ expr : left=expr op=('<'|'=<'|'=='|'><'|'>='|'>') right=expr #opExpr
         | left=expr op=('+'|'-') right=expr #opExpr
         | '-' e=expr #negStmt
         | '(' e=expr ')' #wrapperExpr
+        | methodeName=ID '('arglist')'                                              #funccallStmt
         | ID    #idExpr
         | INT   #numExpr
         | '{' s=statements '}' #inlineStmt// OPTION 2
-        | ID '('arglist')'                                              #funccallStmt
+
         ;
 
 idlist :  ID (',' ID)*;

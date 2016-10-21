@@ -25,11 +25,11 @@ public class Interpreter {
 
         @Override
         public Integer visitStatements(GrammarParser.StatementsContext ctx) {
+            Integer result = null;
             for (GrammarParser.StatementContext c : ctx.statement()) {
-                visit(c);
+                result = visit(c);
             }
-
-            return null;
+            return result;
         }
 
         @Override
@@ -62,7 +62,7 @@ public class Interpreter {
 
         @Override
         public Integer visitFunccallStmt(GrammarParser.FunccallStmtContext ctx) {
-            String id = ctx.ID().getText();
+            String id = ctx.methodeName.getText();
 
             FuncHelp _fh = funcDefinitions.get(id);
 
@@ -158,17 +158,18 @@ public class Interpreter {
                 return null;
             }
 
+            Integer result=null;
             if (c == 1) {
-                visit(ctx.sIf);
+                result = visit(ctx.sIf);
             }
 
             if (ctx.sElse != null) {
                 if (c == 0) {
-                    visit(ctx.sElse);
+                    result = visit(ctx.sElse);
                 }
             }
 
-            return null;
+            return result;
         }
 
         @Override

@@ -22,7 +22,7 @@ public class InterpreterTest {
     public void ParseMathOperators() {
         errors = interpreter.parseString("print 17%3;");
         Assert.assertTrue(errors);
-        errors = interpreter.parseString("print 17%3;");
+        errors = interpreter.parseString("print 5%2;");
         Assert.assertTrue(errors);
     }
 
