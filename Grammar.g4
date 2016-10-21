@@ -23,7 +23,7 @@ grammar Grammar;
 
 statements returns [int vStatements] : (statement {$vStatements = $statement.vStatement;} (';')?)*;
 
-statement returns [int vStatement] : 'print' expr {System.out.println($expr.vExpr);  }
+statement returns [int vStatement]: 'print' expr {System.out.println($expr.vExpr);  }
             | 'var' ID {setVariable($ID.text, 0); } ('=' expr {setVariable($ID.text, $expr.vExpr); })?
             | ID '=' expr {
                             if(!variableDefined($ID.text)) {
@@ -31,11 +31,33 @@ statement returns [int vStatement] : 'print' expr {System.out.println($expr.vExp
                             }
                             else {setVariable($ID.text, $expr.vExpr);}
                             }
-            | 'while' expr 'do' statement
-                            {
-                                while($expr.vExpr != 0){$vStatement = $statement.vStatement;}
-                            }
-//            | 'if' expr 'then' statement ('else' statement)?
+            |  'while' e=expr 'do' s=statement
+                {
+                    while(true)
+                    {
+                        if($e.vExpr == 0) {break;}
+
+                        $vStatement = $s.vStatement;
+                    }
+                }
+            | 'if' e=expr 'then' sIf=statement {
+                                          if($e.vExpr == 1)
+                                           {
+                                               $vStatement = $sIf.vStatement;
+                                           }
+                   }
+               ('else' sElse=statement
+                {
+                   if($e.vExpr == 1)
+                    {
+                        $vStatement = $sIf.vStatement;
+                    }
+                   else
+                    {
+                        $vStatement = $sElse.vStatement;
+                    }
+                }
+            )?
 //         //   | 'funcdef' ID '(' idlist ')' statement // OPTION 3
             | '{' statements '}' {$vStatement = $statements.vStatements;};  // OPTION 1
 //            | expr;                // OPTION 2
@@ -51,15 +73,15 @@ cmp  returns [int vCmp] : sum {$vCmp = $sum.vSum;}
                         ('>' sum {$vCmp =  ($vCmp > $sum.vSum) ? 1 : 0; })?;
 
 sum returns [int vSum] : product {$vSum = $product.vProduct; }
-                         ('+' product {$vSum = $vSum + $product.vProduct; })*
-                         ('-' product {$vSum = $vSum - $product.vProduct; })*;
+                         ('+' p=product {$vSum = $vSum + $p.vProduct; })*
+                         ('-' p=product {$vSum = $vSum - $p.vProduct; })*;
 
 product returns [int vProduct] : unary {$vProduct = $unary.vUnary; }
-                ('*' unary {$vProduct = $vProduct * $unary.vUnary; })*
-                ('/' unary {$vProduct = $vProduct / $unary.vUnary; })*
-                ('%' unary {$vProduct = $vProduct / $unary.vUnary; })*;
+                ('*' u=unary {$vProduct = $vProduct * $u.vUnary; })*
+                ('/' u=unary {$vProduct = $vProduct / $u.vUnary; })*
+                ('%' u=unary {$vProduct = $vProduct % $u.vUnary; })*;
 
-unary returns [int vUnary] : '-' unary {$vUnary = $unary.vUnary *(-1); }
+unary returns [int vUnary] : '-' u=unary {$vUnary = -$u.vUnary; }
             | term {$vUnary = $term.vTerm; };
 
 term returns [int vTerm]: '(' expr ')' { $vTerm = $expr.vExpr; }

@@ -103,4 +103,14 @@ public class InterpreterTest {
         Assert.assertFalse(errors);
     }
 
+    @Test
+    public void ParserIf(){
+        try {
+            errors = interpreter.parseFile("input_ifelse.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Assert.assertFalse(errors);
+    }
+
 }

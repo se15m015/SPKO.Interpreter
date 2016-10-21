@@ -1,5 +1,5 @@
 var y = 0;
-while(y >< 3) do
+while(y < 4) do
 {
     y = y + 1;
     print y;
