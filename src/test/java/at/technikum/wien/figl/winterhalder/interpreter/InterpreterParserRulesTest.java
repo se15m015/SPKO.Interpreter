@@ -9,42 +9,39 @@ import java.io.IOException;
 /**
  * Created by richie on 15/10/16.
  */
-public class InterpreterTest {
-    Interpreter interpreter;
+public class InterpreterParserRulesTest {
+    InterpreterParserRules interpreter;
     boolean errors;
 
     @Before
     public void begin(){
-        interpreter = new Interpreter();
+        interpreter = new InterpreterParserRules();
     }
 
     @Test
     public void AssignVariableAndPrintValue(){
         errors = interpreter.parseString("var x = 5; print x+3;");
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
     }
 
-    @Test
-    public void UsingUndeclaredVariable()
-    {
+    @Test(expected=IllegalArgumentException.class)
+    public void UsingUndeclaredVariable(){
         errors = interpreter.parseString("x = 5;");
-        Assert.assertFalse(errors);
-
     }
     @Test
     public void DeclareVariableButUnassigned(){
         errors = interpreter.parseString("var x; print x;");
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
     }
 
     @Test
     public void ParseComments(){
         errors = interpreter.parseString("//print 18;");
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
         errors = interpreter.parseString("print 3;//print 17;");
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
         errors = interpreter.parseString("print 3;var x;// KOMMENTAR \nx=3;//KOMMENTAR2\nprint x+1;");
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
     }
 
     @Test
@@ -54,7 +51,7 @@ public class InterpreterTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
     }
 
     @Test
@@ -83,21 +80,14 @@ public class InterpreterTest {
     public void ParserCompare_ShouldPass(){
         errors = false;
         errors = interpreter.parseString("print 5 > 234;");
-        Assert.assertTrue(errors);
         errors = interpreter.parseString("print 5 < 234;");
-        Assert.assertTrue(errors);
         errors = interpreter.parseString("print 5 == 234;");
-        Assert.assertTrue(errors);
         errors = interpreter.parseString("print 234 == 234;");
-        Assert.assertTrue(errors);
         errors = interpreter.parseString("print 234 >= 234;");
-        Assert.assertTrue(errors);
         errors = interpreter.parseString("print 134 >= 234;");
-        Assert.assertTrue(errors);
         errors = interpreter.parseString("print 234 >< 234;");
-        Assert.assertTrue(errors);
         errors = interpreter.parseString("print 235 >< 234;");
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
     }
 
     @Test
@@ -107,7 +97,7 @@ public class InterpreterTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
     }
 
     @Test
@@ -117,7 +107,7 @@ public class InterpreterTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Assert.assertTrue(errors);
+        Assert.assertFalse(errors);
     }
 
 }
