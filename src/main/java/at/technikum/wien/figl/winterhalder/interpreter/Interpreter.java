@@ -243,6 +243,36 @@ public class Interpreter {
         }
 
         @Override
+        public Integer visitIfNotNullStmt(GrammarParser.IfNotNullStmtContext ctx) {
+
+            Integer o = visit(ctx.o);
+            Integer c = visit(ctx.c);
+            Integer result = null;
+
+            if(o!=null) {
+
+                if (c == null) {
+                    System.err.println("condition was null");
+                    return null;
+                }
+
+                if (c == 1) {
+                    result = visit(ctx.sIf);
+                }
+                else if (ctx.sElse != null) {
+                    result = visit(ctx.sElse);
+                }
+
+            }
+            if (ctx.sElse != null) {
+                result = visit(ctx.sElse);
+            }
+
+            return result;
+
+        }
+
+        @Override
         public Integer visitIdExpr(GrammarParser.IdExprContext ctx) {
             Map<String, Integer> _scopeToUse = getScope();
 

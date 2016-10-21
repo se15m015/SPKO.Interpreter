@@ -58,7 +58,7 @@ public class InterpreterTest {
     @Test
     public void ParserShouldPass() {
         try {
-            errors = interpreter.parseFile("input_should_pass.txt");
+            errors = interpreter.parseFile("testfiles\\input_should_pass.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,7 +111,7 @@ public class InterpreterTest {
     @Test
     public void ParserWhile() {
         try {
-            errors = interpreter.parseFile("input_while.txt");
+            errors = interpreter.parseFile("testfiles\\input_while.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,7 +121,7 @@ public class InterpreterTest {
     @Test
     public void ParserIf() {
         try {
-            errors = interpreter.parseFile("input_ifelse.txt");
+            errors = interpreter.parseFile("testfiles\\input_ifelse.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -137,7 +137,7 @@ public class InterpreterTest {
     @Test
     public void ParseInlineStatement() {
         try {
-            errors = interpreter.parseFile("input_InlineStatement.txt");
+            errors = interpreter.parseFile("testfiles\\input_InlineStatement.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -147,7 +147,7 @@ public class InterpreterTest {
     @Test
     public void ParseFunc() {
         try {
-            errors = interpreter.parseFile("input_funcdef.txt");
+            errors = interpreter.parseFile("testfiles\\input_funcdef.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -157,7 +157,17 @@ public class InterpreterTest {
     @Test
     public void ParseFunc2() {
         try {
-            errors = interpreter.parseFile("input_funcdef2.txt");
+            errors = interpreter.parseFile("testfiles\\input_funcdef2.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(errors);
+    }
+
+    @Test
+    public void ParseIfNotNull() {
+        try {
+            errors = interpreter.parseFile("testfiles\\input_ifNotNull.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

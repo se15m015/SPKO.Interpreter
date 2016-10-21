@@ -9,6 +9,7 @@ statement : 'print' e=expr                                                  #pri
             | ID '=' e=expr                                                 #assignStmt
             |  'while' c=expr 'do' s=statement                              #whileStmt
             | 'if' c=expr 'then' sIf=statement ('else' sElse=statement)?    #ifStmt
+            | 'if!Null' o=expr ',' c=expr 'then' sIf=statement ('else' sElse=statement)? #ifNotNullStmt
             | 'funcdef' ID '(' idlist ')' statement                         #funcdefStmt
             | '{' s=statements '}'                                          #blockStmt // OPTION 1
             | expr                                                          #simpleExpr // OPTION 2
