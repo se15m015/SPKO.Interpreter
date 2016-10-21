@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * Created by domin_000 on 21.10.2016.
@@ -13,6 +14,7 @@ import java.util.Map;
 public class Interpreter {
     final GrammarVisitor<Integer> visitor = new GrammarBaseVisitor<Integer>() {
         final Map<String, Integer> symTable = new HashMap<String, Integer>();
+        final Stack<Map<String, Integer>> scopeStack = new Stack<Map<String, Integer>>();
 
         public Integer visitStatements(GrammarParser.StatementsContext ctx) {
             for (GrammarParser.StatementContext c : ctx.statement()) {
@@ -23,40 +25,56 @@ public class Interpreter {
         }
 
         public Integer visitPrintStmt(GrammarParser.PrintStmtContext ctx) {
+
             Integer value = visit(ctx.expr());
             System.out.println("Output: " + value);
             return value;
         }
 
         public Integer visitDefineStmt(GrammarParser.DefineStmtContext ctx) {
+            Map<String, Integer> _scopeToUse = getScope();
+
+
             String id = ctx.ID().getText();
             Integer value = null;
             if(ctx.e != null) value = visit(ctx.e);
 
             if (value == null) {
-                symTable.put(id, 0);
+                _scopeToUse.put(id, 0);
             } else {
-                symTable.put(id, value);
+                _scopeToUse.put(id, value);
             }
 
             return value;
         }
 
         public Integer visitAssignStmt(GrammarParser.AssignStmtContext ctx) {
+            Map<String, Integer> _scopeToUse = getScope();
+
             String id = ctx.ID().getText();
             Integer value = visit(ctx.e);
 
             if (value == null) {
                 System.err.println("expr was null!");
                 throw new IllegalArgumentException("Expr was null");
-            } else if (!symTable.containsKey(id)) {
+            } else if (!_scopeToUse.containsKey(id)) {
                 System.err.println("variable is undefined!");
                 throw new IllegalArgumentException("variable is undefined");
             } else {
-                symTable.put(id, value);
+                _scopeToUse.put(id, value);
             }
 
             return value;
+        }
+
+        private Map<String, Integer> getScope() {
+            Map<String,Integer> _scopeToUse=null;
+
+            if(!scopeStack.empty())
+                _scopeToUse = scopeStack.peek();
+            else
+                _scopeToUse = symTable;
+            return _scopeToUse;
         }
 
         public Integer visitWhileStmt(GrammarParser.WhileStmtContext ctx) {
@@ -161,13 +179,65 @@ public class Interpreter {
         }
 
         public Integer visitIdExpr(GrammarParser.IdExprContext ctx) {
+            Map<String, Integer> _scopeToUse = getScope();
+
             String id = ctx.ID().getText();
 
-            if (symTable.containsKey(id)) return symTable.get(id);
+            if (_scopeToUse.containsKey(id)) return _scopeToUse.get(id);
 
             System.err.println("unknown symbol");
             return null;
         }
+
+        public Integer visitInlineStmt(GrammarParser.InlineStmtContext ctx) {
+
+            Map<String,Integer> localScope = new HashMap<>();
+            scopeStack.push(localScope);
+
+            Integer result = null;
+            for (GrammarParser.StatementContext c : ctx.s.statement()) {
+                result = visit(c);
+            }
+
+            scopeStack.pop();
+
+            return result;
+
+        }
+
+        /*
+        public Integer visitGlobalDefineStmt(GrammarParser.GlobalDefineStmtContext ctx)
+        {
+            String id = ctx.ID().getText();
+            Integer value = null;
+            if(ctx.e != null) value = visit(ctx.e);
+
+            if (value == null) {
+                symTable.put(id, 0);
+            } else {
+                symTable.put(id, value);
+            }
+
+            return value;
+        }
+        public Integer visitGlobalAssignStmt(GrammarParser.GlobalAssignStmtContext ctx)
+        {
+            String id = ctx.ID().getText();
+            Integer value = visit(ctx.e);
+
+            if (value == null) {
+                System.err.println("expr was null!");
+                throw new IllegalArgumentException("Expr was null");
+            } else if (!symTable.containsKey(id)) {
+                System.err.println("variable is undefined!");
+                throw new IllegalArgumentException("variable is undefined");
+            } else {
+                symTable.put(id, value);
+            }
+
+            return value;
+        }
+        */
     };
 
     public boolean interpretProgram(String source) {

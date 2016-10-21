@@ -14,31 +14,31 @@ public class InterpreterTest {
     boolean errors;
 
     @Before
-    public void begin(){
+    public void begin() {
         interpreter = new Interpreter();
     }
 
     @Test
-    public void AssignVariableAndPrintValue(){
+    public void AssignVariableAndPrintValue() {
         errors = interpreter.parseString("var x = 5; print x+3;");
         Assert.assertTrue(errors);
     }
 
     @Test
-    public void UsingUndeclaredVariable()
-    {
+    public void UsingUndeclaredVariable() {
         errors = interpreter.parseString("x = 5;");
         Assert.assertFalse(errors);
 
     }
+
     @Test
-    public void DeclareVariableButUnassigned(){
+    public void DeclareVariableButUnassigned() {
         errors = interpreter.parseString("var x; print x;");
         Assert.assertTrue(errors);
     }
 
     @Test
-    public void ParseComments(){
+    public void ParseComments() {
         errors = interpreter.parseString("//print 18;");
         Assert.assertTrue(errors);
         errors = interpreter.parseString("print 3;//print 17;");
@@ -48,7 +48,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void ParserShouldPass(){
+    public void ParserShouldPass() {
         try {
             errors = interpreter.parseFile("input_should_pass.txt");
         } catch (IOException e) {
@@ -72,7 +72,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void ParserShouldFail3(){
+    public void ParserShouldFail3() {
         errors = false;
         errors = interpreter.parseString("5 = 234;");
         Assert.assertTrue(errors);
@@ -80,7 +80,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void ParserCompare_ShouldPass(){
+    public void ParserCompare_ShouldPass() {
         errors = false;
         errors = interpreter.parseString("print 5 > 234;");
         Assert.assertTrue(errors);
@@ -101,7 +101,7 @@ public class InterpreterTest {
     }
 
     @Test
-    public void ParserWhile(){
+    public void ParserWhile() {
         try {
             errors = interpreter.parseFile("input_while.txt");
         } catch (IOException e) {
@@ -111,9 +111,35 @@ public class InterpreterTest {
     }
 
     @Test
-    public void ParserIf(){
+    public void ParserIf() {
         try {
             errors = interpreter.parseFile("input_ifelse.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(errors);
+    }
+
+    @Test
+    public void ParseExprInStmt() {
+        errors = interpreter.parseString("3+5;");
+        Assert.assertTrue(errors);
+    }
+
+    @Test
+    public void ParseInlineStatement() {
+        try {
+            errors = interpreter.parseFile("input_InlineStatement.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(errors);
+    }
+
+    @Test
+    public void ParseFunc() {
+        try {
+            errors = interpreter.parseFile("input_funcdef.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

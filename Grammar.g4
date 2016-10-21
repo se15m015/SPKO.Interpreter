@@ -3,13 +3,16 @@ grammar Grammar;
 statements : (statement (';')?)*;
 
 statement : 'print' e=expr                                                  #printStmt
+            //| 'gvar' ID ('=' e=expr)?                                        #globalDefineStmt
             | 'var' ID ('=' e=expr)?                                        #defineStmt
+            //| 'this.'ID '=' e=expr                                          #globalAssignStmt
             | ID '=' e=expr                                                 #assignStmt
             |  'while' c=expr 'do' s=statement                              #whileStmt
             | 'if' c=expr 'then' sIf=statement ('else' sElse=statement)?    #ifStmt
-//         //   | 'funcdef' ID '(' idlist ')' statement // OPTION 3
-            | '{' s=statements '}'                                          # blockStmt // OPTION 1
-//            | expr;                // OPTION 2
+            | 'funcdef' ID '(' idlist ')' statement                         #funcdefStmt
+            //| ID '(' Methodenaufruf
+            | '{' s=statements '}'                                          #blockStmt // OPTION 1
+            | expr                                                          #simpleExpr // OPTION 2
             ;
 expr : left=expr op=('<'|'=<'|'=='|'><'|'>='|'>') right=expr #opExpr
         | left=expr op=('*'|'/'|'%') right=expr #opExpr
@@ -18,7 +21,10 @@ expr : left=expr op=('<'|'=<'|'=='|'><'|'>='|'>') right=expr #opExpr
         | '(' e=expr ')' #wrapperExpr
         | ID    #idExpr
         | INT   #numExpr
-        //| '{' statements '}' // OPTION 2
+        | '{' s=statements '}' #inlineStmt// OPTION 2
+    ;
+
+idlist :  ID (',' ID)*
     ;
 
 ID          : [a-zA-Z][a-zA-Z0-9_]*;
