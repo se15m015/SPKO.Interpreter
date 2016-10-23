@@ -2,6 +2,7 @@ package at.technikum.wien.figl.winterhalder.interpreter;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -168,6 +169,17 @@ public class InterpreterTest {
     public void ParseIfNotNull() {
         try {
             errors = interpreter.parseFile("testfiles\\input_ifNotNull.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(errors);
+    }
+
+    @Test
+    @Ignore
+    public void ParseWhileIf() {
+        try {
+            errors = interpreter.parseFile("testfiles\\input_whileif.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
