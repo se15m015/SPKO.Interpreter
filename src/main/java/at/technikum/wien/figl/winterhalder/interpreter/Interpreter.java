@@ -274,17 +274,17 @@ public class Interpreter {
 
         @Override
         public Integer visitWhileIfStmt(GrammarParser.WhileIfStmtContext ctx) {
-            Integer cif = visit(ctx.cif);
-            Integer cwhile = visit(ctx.cwhile);
-
             while(true) {
+                Integer cif = visit(ctx.cif);
+                Integer cwhile = visit(ctx.cwhile);
+
                 if (cif == null || cwhile == null) {
                     System.err.println("if condition or while condition was null");
                     return null;
                 } else {
                     if (cwhile == 0) {
                         return null;
-                    } else if (cif == 0) {
+                    } else if (cif == 1) {
                         visit(ctx.sIf);
                     } else {
                         visit(ctx.sElse);

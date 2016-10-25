@@ -176,7 +176,6 @@ public class InterpreterTest {
     }
 
     @Test
-    @Ignore
     public void ParseWhileIf() {
         try {
             errors = interpreter.parseFile("testfiles\\input_whileif.txt");
