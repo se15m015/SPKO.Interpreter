@@ -1,6 +1,7 @@
 package at.technikum.wien.figl.winterhalder.interpreter;
 
 import at.technikum.wien.figl.winterhalder.interpreter.gen.*;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -135,6 +136,8 @@ public class Interpreter {
 
         @Override
         public Integer visitWhileStmt(GrammarParser.WhileStmtContext ctx) {
+            Integer result = null;
+
             while (true) {
                 Integer b = visit(ctx.c);
 
@@ -143,9 +146,9 @@ public class Interpreter {
                     return null;
                 }
 
-                if (b == 0) return null;
+                if (b == 0) return result;
 
-                visit(ctx.s);
+                result = visit(ctx.s);
             }
         }
 
@@ -214,9 +217,9 @@ public class Interpreter {
                 case "=<":
                     return boolToInt(left <= right);
                 case "==":
-                    return boolToInt(left == right);
+                    return boolToInt(left.equals(right));
                 case "><":
-                    return boolToInt(left != right);
+                    return boolToInt(!left.equals(right));
                 case ">=":
                     return boolToInt(left >= right);
                 case ">":
@@ -301,53 +304,19 @@ public class Interpreter {
 
         }
 
-
-        /*
-        public Integer visitGlobalDefineStmt(GrammarParser.GlobalDefineStmtContext ctx)
-        {
-            String id = ctx.ID().getText();
-            Integer value = null;
-            if(ctx.e != null) value = visit(ctx.e);
-
-            if (value == null) {
-                symTable.put(id, 0);
-            } else {
-                symTable.put(id, value);
-            }
-
-            return value;
-        }
-        public Integer visitGlobalAssignStmt(GrammarParser.GlobalAssignStmtContext ctx)
-        {
-            String id = ctx.ID().getText();
-            Integer value = visit(ctx.e);
-
-            if (value == null) {
-                System.err.println("expr was null!");
-                throw new IllegalArgumentException("Expr was null");
-            } else if (!symTable.containsKey(id)) {
-                System.err.println("variable is undefined!");
-                throw new IllegalArgumentException("variable is undefined");
-            } else {
-                symTable.put(id, value);
-            }
-
-            return value;
-        }
-        */
     };
 
-    public boolean interpretProgram(String source) {
+    public Integer interpretProgram(String source) {
         TokenStream toks = new CommonTokenStream(new GrammarLexer(new ANTLRInputStream(source)));
 
         GrammarParser parser = new GrammarParser(toks);
 
-        this.visitor.visit(parser.statements());
+        Integer result = this.visitor.visit(parser.statements());
 
         if(parser.getNumberOfSyntaxErrors() == 0){
-            return false;
+            return result;
         }else {
-            return true;
+            return null;
         }
     }
 
@@ -355,23 +324,17 @@ public class Interpreter {
 
     }
 
-    public boolean parseFile(String fileName) throws IOException {
+    public Integer parseFile(String fileName) throws IOException {
         ANTLRFileStream input = new ANTLRFileStream(fileName);
         return parse(input);
     }
 
-    public boolean parseString(String content){
+    public Integer parseString(String content){
         CharStream input = new ANTLRInputStream(content);
         return parse(input);
     }
 
-    private boolean parse(CharStream input){
-
-        try{
-            interpretProgram(input.toString());
-        }catch(Exception e){
-            return  false;
-        }
-        return true;
+    private Integer parse(CharStream input){
+        return  interpretProgram(input.toString());
     }
 }
