@@ -276,6 +276,29 @@ public class Interpreter {
         }
 
         @Override
+        public Integer visitWhileIfStmt(GrammarParser.WhileIfStmtContext ctx) {
+            Integer result = null;
+
+            while(true) {
+                Integer cif = visit(ctx.cif);
+                Integer cwhile = visit(ctx.cwhile);
+
+                if (cif == null || cwhile == null) {
+                    System.err.println("if condition or while condition was null");
+                    return null;
+                } else {
+                    if (cwhile == 0) {
+                        return result;
+                    } else if (cif == 1) {
+                        result = visit(ctx.sIf);
+                    } else {
+                        result = visit(ctx.sElse);
+                    }
+                }
+            }
+        }
+
+        @Override
         public Integer visitIdExpr(GrammarParser.IdExprContext ctx) {
             Map<String, Integer> _scopeToUse = getScope();
 
